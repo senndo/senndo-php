@@ -77,7 +77,13 @@ final class CurlTransport implements Transport
         $errorCode = curl_errno($handle);
         $errorMessage = curl_error($handle);
         $status = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
-        curl_close($handle);
+        // PAS DE `curl_close()`. Depuis PHP 8.0 la poignée est un objet (`CurlHandle`) libéré par le
+        // ramasse-miettes, l'appel n'a plus aucun effet — et PHP 8.5 le DÉPRÉCIE. Le paquet exige
+        // >= 8.1 : il n'existe donc aucune version supportée où l'appel serve à quelque chose, et
+        // sur 8.5 il imprimait un avertissement de dépréciation à CHAQUE requête, dans la sortie de
+        // l'application du client. Aucun gate ne l'avait vu — les tests injectent un transport de
+        // substitution et ne touchent jamais cURL ; c'est la sonde live, sur PHP 8.5.9, qui l'a
+        // révélé (26-08-02).
 
         if ($errorCode === CURLE_OPERATION_TIMEDOUT) {
             throw new TimeoutException($request->timeout, $request->url);

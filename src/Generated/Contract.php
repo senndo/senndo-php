@@ -204,6 +204,11 @@ namespace Senndo\Generated;
  *     currencies: list<ListCurrenciesResponseCurrenciesItem>,
  * }
  *
+ * @phpstan-type ListSenderIdsResponseSenderIdsItemVerification array{
+ *     status: 'pending'|'verified'|'failed',
+ *     confirmedAt: string|null,
+ * }
+ *
  * @phpstan-type ListSenderIdsResponseSenderIdsItemCountriesItem array{
  *     country: string,
  *     status: 'approved'|'pending'|'rejected',
@@ -211,14 +216,22 @@ namespace Senndo\Generated;
  *
  * @phpstan-type ListSenderIdsResponseSenderIdsItem array{
  *     id: string,
+ *     ownerAccountId: string|null,
+ *     ownerName: string|null,
  *     value: string,
  *     channel: string,
  *     shared: bool,
  *     lifecycleStatus: 'active'|'suspended'|'archived',
+ *     suspensionReason: string|null,
+ *     suspendedAt: string|null,
+ *     archivedAt: string|null,
+ *     createdAt: string,
+ *     verification: ListSenderIdsResponseSenderIdsItemVerification|null,
  *     countries: list<ListSenderIdsResponseSenderIdsItemCountriesItem>,
  * }
  *
  * @phpstan-type ListSenderIdsResponse array{
+ *     canReview: bool,
  *     senderIds: list<ListSenderIdsResponseSenderIdsItem>,
  * }
  *
@@ -262,6 +275,7 @@ namespace Senndo\Generated;
  *     channel?: string|null,
  *     toAddr?: string|null,
  *     status?: string|null,
+ *     receiptRef?: string|null,
  * }
  *
  * @phpstan-type ListLedgerResponseAggregates array{
@@ -319,15 +333,42 @@ namespace Senndo\Generated;
  *     messages: list<ListInboxMessagesResponseMessagesItem>,
  * }
  *
+ * @phpstan-type ListWaTemplatesResponseTemplatesItemHeader array{
+ *     type: 'none'|'text'|'image'|'video'|'document',
+ *     text?: string,
+ *     example?: string,
+ *     exampleHandle?: string,
+ * }
+ *
+ * @phpstan-type ListWaTemplatesResponseTemplatesItemButtonsItem array{
+ *     type: 'quick_reply'|'url'|'phone_number'|'copy_code'|'otp',
+ *     text?: string,
+ *     url?: string,
+ *     phoneNumber?: string,
+ *     example?: string,
+ *     otpType?: 'copy_code'|'one_tap'|'zero_tap',
+ *     codeVariable?: int,
+ * }
+ *
  * @phpstan-type ListWaTemplatesResponseTemplatesItem array{
  *     id: string,
  *     name: string,
  *     language: string,
  *     category: 'MARKETING'|'UTILITY'|'AUTHENTICATION',
+ *     requestedCategory: 'MARKETING'|'UTILITY'|'AUTHENTICATION',
+ *     effectiveCategory: 'MARKETING'|'UTILITY'|'AUTHENTICATION'|null,
  *     status: 'draft'|'pending'|'approved'|'rejected'|'paused',
  *     platformShared: bool,
  *     body: string,
  *     footer?: string,
+ *     bodyExamples: list<string>,
+ *     rejectionReason: string,
+ *     quality: 'GREEN'|'YELLOW'|'RED'|'UNKNOWN'|null,
+ *     source: 'builder'|'library'|'synced'|'manual',
+ *     createdAt: string,
+ *     updatedAt: string,
+ *     header: ListWaTemplatesResponseTemplatesItemHeader,
+ *     buttons: list<ListWaTemplatesResponseTemplatesItemButtonsItem>,
  * }
  *
  * @phpstan-type ListWaTemplatesResponse array{
@@ -343,9 +384,12 @@ namespace Senndo\Generated;
  * }
  *
  * @phpstan-type ListWaCloudNumbersResponseSharedSendersItem array{
+ *     kind: 'whatsapp_cloud'|'whatsapp_baileys',
  *     channel: string,
- *     verifiedName?: string|null,
- *     pairedNumber?: string|null,
+ *     verifiedName: string|null,
+ *     pairedNumber: string|null,
+ *     oneWay: bool,
+ *     sessionId?: string,
  * }
  *
  * @phpstan-type ListWaCloudNumbersResponse array{
@@ -378,6 +422,7 @@ namespace Senndo\Generated;
  *     name: string,
  *     url: string,
  *     events: list<string>,
+ *     revokedAt: string|null,
  *     createdAt: string,
  *     secret: string,
  * }
@@ -407,7 +452,10 @@ namespace Senndo\Generated;
  *     attempt: int,
  *     httpStatus?: int|null,
  *     error?: string|null,
+ *     durationMs?: int|null,
+ *     testMode?: bool,
  *     createdAt: string,
+ *     deliveredAt?: string|null,
  * }
  *
  * @phpstan-type ListWebhookDeliveriesResponse array{
