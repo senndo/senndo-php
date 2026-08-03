@@ -3,6 +3,40 @@
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le versionnage
 sémantique.
 
+## 0.1.3 — 2026-08-03
+
+Le gate serveur↔contrat descend désormais jusqu'à la **feuille** et compare trois axes : le type
+de base, l'obligation, la nullité. Il a trouvé **43 écarts, tous dans le même sens** — le contrat
+annonçait facultatif ce que la route rend toujours. Aucun n'était dangereux (aucun champ promis
+n'était absent de la réponse) et tous coûtaient la même chose : une branche morte à écrire, pour
+un cas qui ne se produit jamais.
+
+### Corrigé
+
+- `MessageStatus` gagne **`unknown`**. Le serveur le rend depuis toujours — c'est le statut d'un
+  envoi dont l'issue est indéterminée : réconciliation d'un opérateur qui n'a jamais accusé, ou
+  verdict qui n'est pas arrivé. L'union publiée n'en décrivait que sept.
+- **42 champs cessent d'être facultatifs** dans les réponses. Les plus visibles : `senderId`,
+  `routeRuleId`, `billedAmountUsd`, `billedCurrency`, `reversedAmountUsd`, `failureCode`,
+  `category`, `body`, `source`, `toAddr`, `fromAddr`, `status` du journal, `previewUrl`,
+  `balanceAfter`, `closingBalanceUsd`, `revokedAt`, `httpStatus`, `durationMs`, `deliveredAt`,
+  `testMode`, `transliterateGsm7`, `transliterated`. Ils sont **présents dans chaque réponse** ;
+  `null` reste possible là où il l'était déjà, mais la clé, elle, ne manque jamais.
+- `listWaCloudNumbers[].displayNumber` cesse d'être **nullable** : la colonne est `NOT NULL
+  DEFAULT ''`, donc le champ est une chaîne — éventuellement vide, jamais `null`.
+
+### Note — ce qui peut ne plus passer PHPStan chez vous
+
+Ces deux corrections ne retirent rien à la réponse, mais elles **resserrent des types**, et un
+type plus étroit peut faire échouer une analyse qui passait :
+
+- une correspondance exhaustive sur `MessageStatus` doit maintenant traiter `unknown` ;
+- un `isset($row['senderId'])` employé pour tester l'absence décrit une branche morte : la clé
+  était déjà toujours là — et `isset` reste `false` sur une valeur `null`, ce qui n'a jamais
+  signifié « clé absente ».
+
+`0.1.2` restera disponible sur Packagist ; nous ne dépublions rien.
+
 ## 0.1.2 — 2026-08-02
 
 Quatre champs de plus, trouvés non par une sonde mais par un **gate statique** : la campagne live

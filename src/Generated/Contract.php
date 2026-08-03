@@ -47,13 +47,13 @@ namespace Senndo\Generated;
  *
  * @phpstan-type SendMessageResponse array{
  *     id: string,
- *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed',
+ *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
  *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
  *     to: string,
- *     senderId?: string|null,
- *     routeRuleId?: string|null,
- *     billedAmountUsd?: string|null,
- *     billedCurrency?: string|null,
+ *     senderId: string|null,
+ *     routeRuleId: string|null,
+ *     billedAmountUsd: string|null,
+ *     billedCurrency: string|null,
  *     replay: bool,
  * }
  *
@@ -61,16 +61,16 @@ namespace Senndo\Generated;
  *     id: string,
  *     createdAt: string,
  *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
- *     toAddr?: string|null,
- *     senderId?: string|null,
- *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed',
- *     billedAmountUsd?: string|null,
- *     reversedAmountUsd?: string|null,
- *     failureCode?: string|null,
- *     billedCurrency?: string|null,
- *     category?: string|null,
- *     body?: string,
- *     source?: 'console'|'api'|'api_test',
+ *     toAddr: string|null,
+ *     senderId: string|null,
+ *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
+ *     billedAmountUsd: string|null,
+ *     reversedAmountUsd: string|null,
+ *     failureCode: string|null,
+ *     billedCurrency: string|null,
+ *     category: string|null,
+ *     body: string,
+ *     source: 'console'|'api'|'api_test',
  * }
  *
  * @phpstan-type ListMessagesQuery array{
@@ -79,7 +79,7 @@ namespace Senndo\Generated;
  *     sort?: 'date'|'channel'|'status'|'amount',
  *     dir?: 'asc'|'desc',
  *     channel?: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
- *     status?: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed',
+ *     status?: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
  *     from?: string,
  *     to?: string,
  *     via?: 'api',
@@ -89,16 +89,16 @@ namespace Senndo\Generated;
  *     id: string,
  *     createdAt: string,
  *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
- *     toAddr?: string|null,
- *     senderId?: string|null,
- *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed',
- *     billedAmountUsd?: string|null,
- *     reversedAmountUsd?: string|null,
- *     failureCode?: string|null,
- *     billedCurrency?: string|null,
- *     category?: string|null,
- *     body?: string,
- *     source?: 'console'|'api'|'api_test',
+ *     toAddr: string|null,
+ *     senderId: string|null,
+ *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
+ *     billedAmountUsd: string|null,
+ *     reversedAmountUsd: string|null,
+ *     failureCode: string|null,
+ *     billedCurrency: string|null,
+ *     category: string|null,
+ *     body: string,
+ *     source: 'console'|'api'|'api_test',
  * }
  *
  * @phpstan-type ListMessagesResponse array{
@@ -130,7 +130,7 @@ namespace Senndo\Generated;
  *     sizeBytes: int,
  *     createdAt: string,
  *     inUse: bool,
- *     previewUrl?: string|null,
+ *     previewUrl: string|null,
  * }
  *
  * @phpstan-type ListMediaResponseUsage array{
@@ -144,13 +144,13 @@ namespace Senndo\Generated;
  *     measuredBytes: int,
  *     tranches: int,
  *     amountUsd: string,
- *     updatedAt?: string|null,
+ *     updatedAt: string|null,
  * }
  *
  * @phpstan-type ListMediaResponseBilling array{
  *     pricePerGibUsd: string|null,
  *     nextPeriodStart: string,
- *     cycle?: ListMediaResponseBillingCycle|null,
+ *     cycle: ListMediaResponseBillingCycle|null,
  * }
  *
  * @phpstan-type ListMediaResponse array{
@@ -172,7 +172,7 @@ namespace Senndo\Generated;
  *     channel: string,
  *     destGroup: string,
  *     priceUsd: string,
- *     buyerAccountId?: string|null,
+ *     buyerAccountId: string|null,
  * }
  *
  * @phpstan-type ListPricesResponse array{
@@ -252,8 +252,8 @@ namespace Senndo\Generated;
  *     segments: int,
  *     units: int,
  *     recipients: int,
- *     transliterateGsm7?: bool,
- *     transliterated?: bool,
+ *     transliterateGsm7: bool,
+ *     transliterated: bool,
  *     unitPriceUsd: string,
  *     totalUsd: string,
  * }
@@ -271,17 +271,17 @@ namespace Senndo\Generated;
  *     createdAt: string,
  *     kind: string,
  *     amountUsd: string,
- *     balanceAfter?: string|null,
- *     channel?: string|null,
- *     toAddr?: string|null,
- *     status?: string|null,
+ *     balanceAfter: string|null,
+ *     channel: string|null,
+ *     toAddr: string|null,
+ *     status: string|null,
  *     receiptRef?: string|null,
  * }
  *
  * @phpstan-type ListLedgerResponseAggregates array{
  *     debitUsd: string,
  *     creditUsd: string,
- *     closingBalanceUsd?: string|null,
+ *     closingBalanceUsd: string|null,
  * }
  *
  * @phpstan-type ListLedgerResponse array{
@@ -321,7 +321,7 @@ namespace Senndo\Generated;
  *     id: string,
  *     channel: string,
  *     direction: 'in'|'out',
- *     fromAddr?: string|null,
+ *     fromAddr: string|null,
  *     toAddr: string,
  *     body: string,
  *     createdAt: string,
@@ -360,7 +360,7 @@ namespace Senndo\Generated;
  *     status: 'draft'|'pending'|'approved'|'rejected'|'paused',
  *     platformShared: bool,
  *     body: string,
- *     footer?: string,
+ *     footer: string,
  *     bodyExamples: list<string>,
  *     rejectionReason: string,
  *     quality: 'GREEN'|'YELLOW'|'RED'|'UNKNOWN'|null,
@@ -378,7 +378,7 @@ namespace Senndo\Generated;
  * @phpstan-type ListWaCloudNumbersResponseNumbersItem array{
  *     id: string,
  *     phoneNumberId: string,
- *     displayNumber?: string|null,
+ *     displayNumber: string,
  *     hasToken: bool,
  *     createdAt: string,
  * }
@@ -403,7 +403,7 @@ namespace Senndo\Generated;
  *     name: string,
  *     url: string,
  *     events: list<string>,
- *     revokedAt?: string|null,
+ *     revokedAt: string|null,
  *     createdAt: string,
  * }
  *
@@ -450,12 +450,12 @@ namespace Senndo\Generated;
  *     eventType: string,
  *     status: string,
  *     attempt: int,
- *     httpStatus?: int|null,
- *     error?: string|null,
- *     durationMs?: int|null,
- *     testMode?: bool,
+ *     httpStatus: int|null,
+ *     error: string|null,
+ *     durationMs: int|null,
+ *     testMode: bool,
  *     createdAt: string,
- *     deliveredAt?: string|null,
+ *     deliveredAt: string|null,
  * }
  *
  * @phpstan-type ListWebhookDeliveriesResponse array{
@@ -478,7 +478,7 @@ final class Contract
     public const CHANNELS = ['sms', 'whatsapp_cloud', 'whatsapp_baileys', 'email', 'voice'];
 
     /** @var list<string> */
-    public const MESSAGE_STATUSES = ['pending', 'dispatching', 'queued', 'sent', 'delivered', 'read', 'failed'];
+    public const MESSAGE_STATUSES = ['pending', 'dispatching', 'queued', 'sent', 'delivered', 'read', 'failed', 'unknown'];
 
     /**
      * Les valeurs de code d'échec connues de CETTE version du SDK.
