@@ -57,7 +57,7 @@ use Senndo\Generated\Contract;
 final class Client implements ClientContract
 {
     /** La version du paquet, vérifiée contre `composer.json` par un test. */
-    public const SDK_VERSION = '1.0.0';
+    public const SDK_VERSION = '1.0.1';
 
     /** Les préfixes d'idempotence que la plateforme se réserve (entrants, campagnes). */
     private const RESERVED_IDEMPOTENCY_PREFIXES = ['in:', 'cmp:'];
