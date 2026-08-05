@@ -242,6 +242,7 @@ namespace Senndo\Generated;
  *     senderId?: string|null,
  *     country?: string|null,
  *     hasAttachment?: bool,
+ *     tier?: 'standard'|'premium',
  * }
  *
  * @phpstan-type EstimateMessageResponse array{
@@ -261,7 +262,7 @@ namespace Senndo\Generated;
  * @phpstan-type ListLedgerQuery array{
  *     page?: int,
  *     pageSize?: int,
- *     kind?: string,
+ *     kind?: 'topup'|'topup_bonus'|'debit_send'|'debit_storage'|'debit_ai'|'margin'|'provider_cost'|'withdrawal'|'adjustment'|'reversal'|'transfer',
  *     from?: string,
  *     to?: string,
  * }
@@ -435,7 +436,7 @@ namespace Senndo\Generated;
  * @phpstan-type ListWebhookDeliveriesQuery array{
  *     page?: int,
  *     pageSize?: int,
- *     status?: string,
+ *     status?: 'pending'|'failed_retrying'|'succeeded'|'failed_permanent',
  * }
  *
  * @phpstan-type ListWebhookDeliveriesResponseAggregates array{
