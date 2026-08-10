@@ -18,6 +18,17 @@ namespace Senndo\Generated;
  * à deux décimales devient zéro. Additionnez-les avec `bcadd` ou une bibliothèque décimale,
  * jamais avec l'opérateur `+`.
  *
+ * Code pays ISO 3166-1 alpha-3, en majuscules (« CIV », « FRA », « SEN ») — le format du
+ * moteur de routage. Un code que le catalogue ne connaît pas est REFUSÉ, jamais ignoré : il
+ * ne pourrait matcher aucune règle, et l’appel retomberait en silence sur la route par
+ * défaut, à un prix que vous n’avez pas demandé.
+ * @phpstan-type CountryIso3 string
+ *
+ * Code pays ISO 3166-1 alpha-2, en majuscules (« CI », « FR », « SN ») — le format des
+ * approbations d’émetteur. À ne pas confondre avec l’alpha-3 attendu par les champs de
+ * routage.
+ * @phpstan-type CountryAlpha2 string
+ *
  * @phpstan-type SendMessageBodyMedia array{
  *     ref?: string,
  * }
@@ -39,9 +50,11 @@ namespace Senndo\Generated;
  *     template?: SendMessageBodyTemplate,
  *     idempotencyKey: string,
  *     senderId?: string,
- *     country?: string,
+ *     country?: CountryIso3,
  *     category?: 'marketing'|'utility'|'authentication'|'service',
  *     tier?: 'standard'|'premium',
+ *     convertGsm7?: bool,
+ *     personalize?: bool,
  *     subject?: string,
  * }
  *
@@ -54,6 +67,7 @@ namespace Senndo\Generated;
  *     routeRuleId: string|null,
  *     billedAmountUsd: string|null,
  *     billedCurrency: string|null,
+ *     reversedAmountUsd: string|null,
  *     replay: bool,
  * }
  *
@@ -210,7 +224,7 @@ namespace Senndo\Generated;
  * }
  *
  * @phpstan-type ListSenderIdsResponseSenderIdsItemCountriesItem array{
- *     country: string,
+ *     country: CountryAlpha2,
  *     status: 'approved'|'pending'|'rejected',
  * }
  *
@@ -240,9 +254,18 @@ namespace Senndo\Generated;
  *     text: string,
  *     recipients: int,
  *     senderId?: string|null,
- *     country?: string|null,
+ *     country?: CountryIso3|null,
  *     hasAttachment?: bool,
  *     tier?: 'standard'|'premium',
+ *     convertGsm7?: bool,
+ *     personalize?: bool,
+ *     destinations?: list<string>,
+ * }
+ *
+ * @phpstan-type EstimateMessageResponsePersonalized array{
+ *     recipients: int,
+ *     minUnits: int,
+ *     maxUnits: int,
  * }
  *
  * @phpstan-type EstimateMessageResponse array{
@@ -257,6 +280,7 @@ namespace Senndo\Generated;
  *     transliterated: bool,
  *     unitPriceUsd: string,
  *     totalUsd: string,
+ *     personalized?: EstimateMessageResponsePersonalized,
  * }
  *
  * @phpstan-type ListLedgerQuery array{
@@ -265,6 +289,10 @@ namespace Senndo\Generated;
  *     kind?: 'topup'|'topup_bonus'|'debit_send'|'debit_storage'|'debit_ai'|'margin'|'provider_cost'|'withdrawal'|'adjustment'|'reversal'|'transfer',
  *     from?: string,
  *     to?: string,
+ *     sort?: 'date'|'amount'|'kind'|'channel'|'balance',
+ *     dir?: 'asc'|'desc',
+ *     channel?: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     q?: string,
  * }
  *
  * @phpstan-type ListLedgerResponseRowsItem array{
@@ -312,7 +340,7 @@ namespace Senndo\Generated;
  * }
  *
  * @phpstan-type ListInboxMessagesQuery array{
- *     channel: string,
+ *     channel: 'whatsapp_baileys'|'whatsapp_cloud'|'sms',
  *     contact: string,
  *     page?: int,
  *     pageSize?: int,
@@ -673,7 +701,7 @@ final class Contract
             'method' => 'GET',
             'path' => '/v1/ledger',
             'pathParams' => [],
-            'queryParams' => ['page', 'pageSize', 'kind', 'from', 'to'],
+            'queryParams' => ['page', 'pageSize', 'kind', 'from', 'to', 'sort', 'dir', 'channel', 'q'],
             'requiredQueryParams' => [],
             'requiredBodyFields' => [],
             'contentType' => null,
