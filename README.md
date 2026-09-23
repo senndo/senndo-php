@@ -58,7 +58,7 @@ $senndo->sendMessage([
     'idempotencyKey' => "expedition-{$utilisateurId}",
 ]);
 
-// WhatsApp Twilio : un modèle Twilio approuvé (`HX…`) et ses variables numérotées.
+// WhatsApp Twilio : un modèle hébergé (`HX…`, lu par `listContentTemplates()`) et ses variables.
 $senndo->sendMessage([
     'channel' => 'whatsapp_twilio',
     'to' => '+33612345678',
@@ -81,6 +81,11 @@ foreach ($senndo->listSenderIds()['senderIds'] as $expediteur) {
 }
 $modeles = $senndo->listWaTemplates()['templates'];
 journaliser($actifs, array_column($modeles, 'language', 'name'));
+
+// whatsapp_twilio : les modèles hébergés prêtés par la plateforme. Liste vide et
+// reason === 'byok' si votre compte émet sous ses propres identifiants d'acheminement.
+$heberges = $senndo->listContentTemplates();
+journaliser($heberges['reason'], array_column($heberges['templates'], 'language', 'sid'));
 ```
 
 ## Quand un statut est-il définitif ?
@@ -294,7 +299,19 @@ conserverLeSecret($endpoint['secret']);
 ```
 
 Le secret n'est lisible **qu'à la création**. Il signe chaque livraison : vérifiez la signature avant
-de faire quoi que ce soit du corps.
+de faire quoi que ce soit du corps, sur le corps **brut** reçu. Au-delà de 300 secondes d'écart, la
+signature est refusée comme un rejeu.
+
+```php
+use Senndo\Webhook;
+
+$corps = (string) file_get_contents('php://input');
+$enTete = $_SERVER['HTTP_X_SENNDO_SIGNATURE'] ?? null;
+if (!Webhook::verifySignature((string) getenv('SENNDO_WEBHOOK_SECRET'), is_string($enTete) ? $enTete : null, $corps)) {
+    http_response_code(400);
+    exit;
+}
+```
 
 ---
 

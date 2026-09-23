@@ -48,6 +48,7 @@ use Senndo\Generated\Contract;
  * @phpstan-import-type ListWaTemplatesResponse from Contract
  * @phpstan-import-type ListWaCloudNumbersResponse from Contract
  * @phpstan-import-type GetRoutingCredentialsResponse from Contract
+ * @phpstan-import-type ListContentTemplatesResponse from Contract
  * @phpstan-import-type ListWebhooksResponse from Contract
  * @phpstan-import-type CreateWebhookBody from Contract
  * @phpstan-import-type CreateWebhookResponse from Contract
@@ -58,7 +59,7 @@ use Senndo\Generated\Contract;
 final class Client implements ClientContract
 {
     /** La version du paquet, vérifiée contre `composer.json` par un test. */
-    public const SDK_VERSION = '1.1.0';
+    public const SDK_VERSION = '1.2.0';
 
     /** Les préfixes d'idempotence que la plateforme se réserve (entrants, campagnes). */
     private const RESERVED_IDEMPOTENCY_PREFIXES = ['in:', 'cmp:'];
@@ -404,6 +405,20 @@ final class Client implements ClientContract
     {
         /** @var GetRoutingCredentialsResponse */
         return $this->call('getRoutingCredentials', $options);
+    }
+
+    /**
+     * Les modèles hébergés que la plateforme prête au canal `whatsapp_twilio`.
+     *
+     * À citer dans `content['sid']`. Liste vide et `reason === 'byok'` quand le compte émet sous
+     * ses propres identifiants d'acheminement : ses modèles vivent dans son propre compte.
+     *
+     * @return ListContentTemplatesResponse
+     */
+    public function listContentTemplates(?RequestOptions $options = null): array
+    {
+        /** @var ListContentTemplatesResponse */
+        return $this->call('listContentTemplates', $options);
     }
 
     // ── Webhooks ─────────────────────────────────────────────────────────────────────────────

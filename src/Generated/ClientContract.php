@@ -24,6 +24,7 @@ use Senndo\RequestOptions;
  * @phpstan-import-type GetBalanceResponse from Contract
  * @phpstan-import-type GetMessageResponse from Contract
  * @phpstan-import-type GetRoutingCredentialsResponse from Contract
+ * @phpstan-import-type ListContentTemplatesResponse from Contract
  * @phpstan-import-type ListCurrenciesResponse from Contract
  * @phpstan-import-type ListInboxMessagesQuery from Contract
  * @phpstan-import-type ListInboxMessagesResponse from Contract
@@ -178,6 +179,13 @@ interface ClientContract
      * @return GetRoutingCredentialsResponse
      */
     public function getRoutingCredentials(?RequestOptions $options = null): array;
+
+    /**
+     * Lister les modèles hébergés disponibles
+     *
+     * @return ListContentTemplatesResponse
+     */
+    public function listContentTemplates(?RequestOptions $options = null): array;
 
     /**
      * Lister ses webhooks

@@ -234,6 +234,7 @@ namespace Senndo\Generated;
  * @phpstan-type ListSenderIdsResponseSenderIdsItemVerification array{
  *     status: 'pending'|'verified'|'failed',
  *     confirmedAt: string|null,
+ *     dmarcRisk: 'reject'|'quarantine'|null,
  * }
  *
  * @phpstan-type ListSenderIdsResponseSenderIdsItemCountriesItem array{
@@ -451,6 +452,17 @@ namespace Senndo\Generated;
  * @phpstan-type GetRoutingCredentialsResponse array{
  *     credentials: GetRoutingCredentialsResponseCredentials|null,
  *     platformFallbackAvailable: bool,
+ * }
+ *
+ * @phpstan-type ListContentTemplatesResponseTemplatesItem array{
+ *     sid: string,
+ *     language: string,
+ *     body: string|null,
+ * }
+ *
+ * @phpstan-type ListContentTemplatesResponse array{
+ *     templates: list<ListContentTemplatesResponseTemplatesItem>,
+ *     reason: 'byok'|'none'|null,
  * }
  *
  * @phpstan-type ListWebhooksResponseEndpointsItem array{
@@ -800,6 +812,19 @@ final class Contract
             'successStatus' => '200',
             'billableSideEffect' => false,
         ],
+        'listContentTemplates' => [
+            'operationId' => 'listContentTemplates',
+            'methodName' => 'listContentTemplates',
+            'method' => 'GET',
+            'path' => '/v1/channels/whatsapp_twilio/templates',
+            'pathParams' => [],
+            'queryParams' => [],
+            'requiredQueryParams' => [],
+            'requiredBodyFields' => [],
+            'contentType' => null,
+            'successStatus' => '200',
+            'billableSideEffect' => false,
+        ],
         'listWebhooks' => [
             'operationId' => 'listWebhooks',
             'methodName' => 'listWebhooks',
@@ -873,6 +898,7 @@ final class Contract
         'listWaTemplates',
         'listWaCloudNumbers',
         'getRoutingCredentials',
+        'listContentTemplates',
         'listWebhooks',
         'createWebhook',
         'revokeWebhook',
