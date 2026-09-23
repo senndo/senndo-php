@@ -47,6 +47,7 @@ use Senndo\Generated\Contract;
  * @phpstan-import-type ListInboxMessagesResponse from Contract
  * @phpstan-import-type ListWaTemplatesResponse from Contract
  * @phpstan-import-type ListWaCloudNumbersResponse from Contract
+ * @phpstan-import-type GetRoutingCredentialsResponse from Contract
  * @phpstan-import-type ListWebhooksResponse from Contract
  * @phpstan-import-type CreateWebhookBody from Contract
  * @phpstan-import-type CreateWebhookResponse from Contract
@@ -57,7 +58,7 @@ use Senndo\Generated\Contract;
 final class Client implements ClientContract
 {
     /** La version du paquet, vérifiée contre `composer.json` par un test. */
-    public const SDK_VERSION = '1.0.2';
+    public const SDK_VERSION = '1.1.0';
 
     /** Les préfixes d'idempotence que la plateforme se réserve (entrants, campagnes). */
     private const RESERVED_IDEMPOTENCY_PREFIXES = ['in:', 'cmp:'];
@@ -154,13 +155,17 @@ final class Client implements ClientContract
         $this->assertRequiredBody('sendMessage', $body);
 
         // La règle que `required` ne peut pas porter (D-122) : le serveur exempte `text` quand le
-        // contenu vit dans `media` ou `template`, mais un envoi sans AUCUN des trois n'a pas de
-        // contenu et part en 400. L'attraper ici épargne l'aller-retour.
-        if (!isset($body['text']) && !isset($body['media']) && !isset($body['template'])) {
+        // contenu vit dans `media`, `template` ou `content` (modèle Twilio, `whatsapp_twilio`),
+        // mais un envoi sans AUCUN des quatre n'a pas de contenu et part en 400. L'attraper ici
+        // épargne l'aller-retour.
+        if (
+            !isset($body['text']) && !isset($body['media']) && !isset($body['template'])
+            && !isset($body['content'])
+        ) {
             throw new RequestException(
-                'senndo : un envoi doit porter du contenu — renseignez « text », ou « media », ou '
-                . '« template ». Le texte n\'est facultatif que lorsque l\'un des deux autres le '
-                . 'remplace.',
+                'senndo : un envoi doit porter du contenu — renseignez « text », « media », '
+                . '« template » ou « content ». Le texte n\'est facultatif que lorsque l\'un des '
+                . 'trois autres le remplace.',
             );
         }
         foreach (self::RESERVED_IDEMPOTENCY_PREFIXES as $prefix) {
@@ -385,6 +390,20 @@ final class Client implements ClientContract
     {
         /** @var ListWaCloudNumbersResponse */
         return $this->call('listWaCloudNumbers', $options);
+    }
+
+    /**
+     * Les identifiants d'acheminement apportés par le compte, et le repli partagé.
+     *
+     * Aucun secret n'en sort : le jeton n'est dans aucune réponse, et de l'identifiant de
+     * compte seuls les quatre derniers caractères sont rendus.
+     *
+     * @return GetRoutingCredentialsResponse
+     */
+    public function getRoutingCredentials(?RequestOptions $options = null): array
+    {
+        /** @var GetRoutingCredentialsResponse */
+        return $this->call('getRoutingCredentials', $options);
     }
 
     // ── Webhooks ─────────────────────────────────────────────────────────────────────────────

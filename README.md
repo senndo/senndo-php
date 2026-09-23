@@ -14,6 +14,9 @@ PHP ≥ 8.1, extensions `curl` et `json`. **Aucune dépendance Composer.**
 ## Premier envoi
 
 ```php
+use Senndo\Client;
+
+// La clé se crée dans la console, écran « REST API ». Ne la committez jamais.
 $senndo = new Client(apiKey: $cleApi);
 
 $envoi = $senndo->sendMessage([
@@ -37,6 +40,56 @@ if ($message['status'] === 'failed') {
     journaliser('échec', $message['failureCode'] ?? null);
 }
 ```
+
+---
+
+## Tous les canaux
+
+Le même appel sert les six canaux ; seul le contenu change.
+
+```php
+// E-mail : `senderId` est une adresse vérifiée de votre compte, `subject` est obligatoire.
+$senndo->sendMessage([
+    'channel' => 'email',
+    'to' => 'client@example.com',
+    'senderId' => 'contact@example.com',
+    'subject' => 'Votre commande est expédiée',
+    'text' => 'Bonjour, votre colis est en route.',
+    'idempotencyKey' => "expedition-{$utilisateurId}",
+]);
+
+// WhatsApp Twilio : un modèle Twilio approuvé (`HX…`) et ses variables numérotées.
+$senndo->sendMessage([
+    'channel' => 'whatsapp_twilio',
+    'to' => '+33612345678',
+    'content' => ['sid' => 'HX00000000000000000000000000000000', 'variables' => ['1' => '4821']],
+    'idempotencyKey' => "otp-twilio-{$utilisateurId}",
+]);
+```
+
+Un nom de modèle WhatsApp Cloud qui existe en plusieurs langues exige `template.language`
+(`'template' => ['name' => '…', 'language' => 'fr']`), sans quoi l'envoi est refusé en
+`422 TEMPLATE_LANGUAGE_REQUIRED`. Ce que votre compte peut réellement utiliser se lit avant
+d'envoyer :
+
+```php
+$actifs = [];
+foreach ($senndo->listSenderIds()['senderIds'] as $expediteur) {
+    if ($expediteur['lifecycleStatus'] === 'active') {
+        $actifs[] = $expediteur['value'];
+    }
+}
+$modeles = $senndo->listWaTemplates()['templates'];
+journaliser($actifs, array_column($modeles, 'language', 'name'));
+```
+
+## Quand un statut est-il définitif ?
+
+`delivered`, `read` et `failed` sont définitifs. `sent` dit que l'opérateur a pris le message en
+charge ; tant que `verdictPending` vaut `true`, aucune preuve de remise n'est encore arrivée.
+Certaines routes n'émettent jamais d'accusé de remise : `sent` peut alors rester le dernier mot.
+Un `failed` rendu par le fournisseur avant toute remise est contre-passé :
+`reversedAmountUsd` porte le montant rendu.
 
 ---
 

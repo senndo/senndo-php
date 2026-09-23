@@ -42,12 +42,18 @@ namespace Senndo\Generated;
  *     urlButtonVariable?: string,
  * }
  *
+ * @phpstan-type SendMessageBodyContent array{
+ *     sid?: string,
+ *     variables?: array<array-key, mixed>,
+ * }
+ *
  * @phpstan-type SendMessageBody array{
- *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice'|'whatsapp_twilio',
  *     to: string,
  *     text?: string,
  *     media?: SendMessageBodyMedia,
  *     template?: SendMessageBodyTemplate,
+ *     content?: SendMessageBodyContent,
  *     idempotencyKey: string,
  *     senderId?: string,
  *     country?: CountryIso3,
@@ -61,26 +67,28 @@ namespace Senndo\Generated;
  * @phpstan-type SendMessageResponse array{
  *     id: string,
  *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
- *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice'|'whatsapp_twilio',
  *     to: string,
  *     senderId: string|null,
  *     routeRuleId: string|null,
  *     billedAmountUsd: string|null,
  *     billedCurrency: string|null,
  *     reversedAmountUsd: string|null,
+ *     failureCode: string|null,
  *     replay: bool,
  * }
  *
  * @phpstan-type GetMessageResponse array{
  *     id: string,
  *     createdAt: string,
- *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice'|'whatsapp_twilio',
  *     toAddr: string|null,
  *     senderId: string|null,
  *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
  *     billedAmountUsd: string|null,
  *     reversedAmountUsd: string|null,
  *     failureCode: string|null,
+ *     verdictPending: bool,
  *     billedCurrency: string|null,
  *     category: string|null,
  *     body: string,
@@ -92,7 +100,7 @@ namespace Senndo\Generated;
  *     pageSize?: int,
  *     sort?: 'date'|'channel'|'status'|'amount',
  *     dir?: 'asc'|'desc',
- *     channel?: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     channel?: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice'|'whatsapp_twilio',
  *     status?: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
  *     from?: string,
  *     to?: string,
@@ -102,13 +110,14 @@ namespace Senndo\Generated;
  * @phpstan-type ListMessagesResponseRowsItem array{
  *     id: string,
  *     createdAt: string,
- *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice'|'whatsapp_twilio',
  *     toAddr: string|null,
  *     senderId: string|null,
  *     status: 'pending'|'dispatching'|'queued'|'sent'|'delivered'|'read'|'failed'|'unknown',
  *     billedAmountUsd: string|null,
  *     reversedAmountUsd: string|null,
  *     failureCode: string|null,
+ *     verdictPending: bool,
  *     billedCurrency: string|null,
  *     category: string|null,
  *     body: string,
@@ -187,6 +196,7 @@ namespace Senndo\Generated;
  *     destGroup: string,
  *     priceUsd: string,
  *     buyerAccountId: string|null,
+ *     byok: bool,
  * }
  *
  * @phpstan-type ListPricesResponse array{
@@ -206,6 +216,9 @@ namespace Senndo\Generated;
  *     unitsPerUsd: string,
  *     balance: string,
  *     billable: bool,
+ *     overdraftFloorUsd: string,
+ *     overdraftFloor: string,
+ *     spendableUsd: string,
  * }
  *
  * @phpstan-type ListCurrenciesResponseCurrenciesItem array{
@@ -250,7 +263,7 @@ namespace Senndo\Generated;
  * }
  *
  * @phpstan-type EstimateMessageBody array{
- *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     channel: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice'|'whatsapp_twilio',
  *     text: string,
  *     recipients: int,
  *     senderId?: string|null,
@@ -291,7 +304,7 @@ namespace Senndo\Generated;
  *     to?: string,
  *     sort?: 'date'|'amount'|'kind'|'channel'|'balance',
  *     dir?: 'asc'|'desc',
- *     channel?: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice',
+ *     channel?: 'sms'|'whatsapp_cloud'|'whatsapp_baileys'|'email'|'voice'|'whatsapp_twilio',
  *     q?: string,
  * }
  *
@@ -427,6 +440,19 @@ namespace Senndo\Generated;
  *     sharedSenders: list<ListWaCloudNumbersResponseSharedSendersItem>,
  * }
  *
+ * @phpstan-type GetRoutingCredentialsResponseCredentials array{
+ *     id: string,
+ *     accountSidLast4: string,
+ *     waFromNumber: string,
+ *     label: string|null,
+ *     verifiedAt: string,
+ * }
+ *
+ * @phpstan-type GetRoutingCredentialsResponse array{
+ *     credentials: GetRoutingCredentialsResponseCredentials|null,
+ *     platformFallbackAvailable: bool,
+ * }
+ *
  * @phpstan-type ListWebhooksResponseEndpointsItem array{
  *     id: string,
  *     name: string,
@@ -464,7 +490,7 @@ namespace Senndo\Generated;
  * @phpstan-type ListWebhookDeliveriesQuery array{
  *     page?: int,
  *     pageSize?: int,
- *     status?: 'pending'|'failed_retrying'|'succeeded'|'failed_permanent',
+ *     status?: 'pending'|'delivering'|'failed_retrying'|'succeeded'|'failed_permanent',
  * }
  *
  * @phpstan-type ListWebhookDeliveriesResponseAggregates array{
@@ -504,7 +530,7 @@ final class Contract
     public const CONTRACT_VERSION = '1.0.0';
 
     /** @var list<string> */
-    public const CHANNELS = ['sms', 'whatsapp_cloud', 'whatsapp_baileys', 'email', 'voice'];
+    public const CHANNELS = ['sms', 'whatsapp_cloud', 'whatsapp_baileys', 'email', 'voice', 'whatsapp_twilio'];
 
     /** @var list<string> */
     public const MESSAGE_STATUSES = ['pending', 'dispatching', 'queued', 'sent', 'delivered', 'read', 'failed', 'unknown'];
@@ -531,6 +557,7 @@ final class Contract
         'NO_ANSWER',
         'BUSY',
         'CALL_CANCELED',
+        'BILLING_REFUSED',
         'PROVIDER_REFUSED',
     ];
 
@@ -760,6 +787,19 @@ final class Contract
             'successStatus' => '200',
             'billableSideEffect' => false,
         ],
+        'getRoutingCredentials' => [
+            'operationId' => 'getRoutingCredentials',
+            'methodName' => 'getRoutingCredentials',
+            'method' => 'GET',
+            'path' => '/v1/channels/whatsapp_twilio/credentials',
+            'pathParams' => [],
+            'queryParams' => [],
+            'requiredQueryParams' => [],
+            'requiredBodyFields' => [],
+            'contentType' => null,
+            'successStatus' => '200',
+            'billableSideEffect' => false,
+        ],
         'listWebhooks' => [
             'operationId' => 'listWebhooks',
             'methodName' => 'listWebhooks',
@@ -832,6 +872,7 @@ final class Contract
         'listInboxMessages',
         'listWaTemplates',
         'listWaCloudNumbers',
+        'getRoutingCredentials',
         'listWebhooks',
         'createWebhook',
         'revokeWebhook',

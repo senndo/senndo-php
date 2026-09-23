@@ -23,6 +23,7 @@ use Senndo\RequestOptions;
  * @phpstan-import-type GetBalanceQuery from Contract
  * @phpstan-import-type GetBalanceResponse from Contract
  * @phpstan-import-type GetMessageResponse from Contract
+ * @phpstan-import-type GetRoutingCredentialsResponse from Contract
  * @phpstan-import-type ListCurrenciesResponse from Contract
  * @phpstan-import-type ListInboxMessagesQuery from Contract
  * @phpstan-import-type ListInboxMessagesResponse from Contract
@@ -170,6 +171,13 @@ interface ClientContract
      * @return ListWaCloudNumbersResponse
      */
     public function listWaCloudNumbers(?RequestOptions $options = null): array;
+
+    /**
+     * Connaître ses identifiants d’acheminement
+     *
+     * @return GetRoutingCredentialsResponse
+     */
+    public function getRoutingCredentials(?RequestOptions $options = null): array;
 
     /**
      * Lister ses webhooks
