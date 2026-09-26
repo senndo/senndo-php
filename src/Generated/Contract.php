@@ -18,7 +18,7 @@ namespace Senndo\Generated;
  * à deux décimales devient zéro. Additionnez-les avec `bcadd` ou une bibliothèque décimale,
  * jamais avec l'opérateur `+`.
  *
- * Code pays ISO 3166-1 alpha-3, en majuscules (« CIV », « FRA », « SEN ») — le format du
+ * Code pays ISO 3166-1 alpha-3, en majuscules (« USA », « FRA », « JPN ») — le format du
  * moteur de routage. Un code que le catalogue ne connaît pas est REFUSÉ, jamais ignoré : il
  * ne pourrait matcher aucune règle, et l’appel retomberait en silence sur la route par
  * défaut, à un prix que vous n’avez pas demandé.
@@ -93,6 +93,58 @@ namespace Senndo\Generated;
  *     category: string|null,
  *     body: string,
  *     source: 'console'|'api'|'api_test',
+ * }
+ *
+ * @phpstan-type CreateVerificationBody array{
+ *     to: string,
+ *     channel?: 'whatsapp',
+ *     locale?: 'fr'|'en',
+ *     codeLength?: int,
+ *     maxAttempts?: int,
+ *     idempotencyKey?: string,
+ * }
+ *
+ * @phpstan-type CreateVerificationResponseDelivery array{
+ *     status: 'pending'|'delivered'|'failed',
+ *     channelUsed: 'whatsapp_cloud'|'whatsapp_twilio'|null,
+ *     reason: string|null,
+ * }
+ *
+ * @phpstan-type CreateVerificationResponse array{
+ *     id: string,
+ *     status: 'pending'|'approved'|'denied'|'expired'|'max_attempts',
+ *     channel: 'whatsapp',
+ *     to: string,
+ *     expiresAt: string,
+ *     attemptsRemaining: int,
+ *     delivery: CreateVerificationResponseDelivery,
+ *     replay: bool,
+ * }
+ *
+ * @phpstan-type CheckVerificationBody array{
+ *     id: string,
+ *     code: string,
+ * }
+ *
+ * @phpstan-type CheckVerificationResponse array{
+ *     id: string,
+ *     status: 'approved'|'denied'|'expired'|'max_attempts',
+ * }
+ *
+ * @phpstan-type GetVerificationResponseDelivery array{
+ *     status: 'pending'|'delivered'|'failed',
+ *     channelUsed: 'whatsapp_cloud'|'whatsapp_twilio'|null,
+ *     reason: string|null,
+ * }
+ *
+ * @phpstan-type GetVerificationResponse array{
+ *     id: string,
+ *     status: 'pending'|'approved'|'denied'|'expired'|'max_attempts',
+ *     channel: 'whatsapp',
+ *     to: string,
+ *     expiresAt: string,
+ *     attemptsRemaining: int,
+ *     delivery: GetVerificationResponseDelivery,
  * }
  *
  * @phpstan-type ListMessagesQuery array{
@@ -617,6 +669,45 @@ final class Contract
             'successStatus' => '200',
             'billableSideEffect' => false,
         ],
+        'createVerification' => [
+            'operationId' => 'createVerification',
+            'methodName' => 'createVerification',
+            'method' => 'POST',
+            'path' => '/v1/verify',
+            'pathParams' => [],
+            'queryParams' => [],
+            'requiredQueryParams' => [],
+            'requiredBodyFields' => ['to'],
+            'contentType' => 'application/json',
+            'successStatus' => '201',
+            'billableSideEffect' => true,
+        ],
+        'checkVerification' => [
+            'operationId' => 'checkVerification',
+            'methodName' => 'checkVerification',
+            'method' => 'POST',
+            'path' => '/v1/verify/check',
+            'pathParams' => [],
+            'queryParams' => [],
+            'requiredQueryParams' => [],
+            'requiredBodyFields' => ['id', 'code'],
+            'contentType' => 'application/json',
+            'successStatus' => '200',
+            'billableSideEffect' => false,
+        ],
+        'getVerification' => [
+            'operationId' => 'getVerification',
+            'methodName' => 'getVerification',
+            'method' => 'GET',
+            'path' => '/v1/verify/{id}',
+            'pathParams' => ['id'],
+            'queryParams' => [],
+            'requiredQueryParams' => [],
+            'requiredBodyFields' => [],
+            'contentType' => null,
+            'successStatus' => '200',
+            'billableSideEffect' => false,
+        ],
         'listMessages' => [
             'operationId' => 'listMessages',
             'methodName' => 'listMessages',
@@ -883,6 +974,9 @@ final class Contract
     public const OPERATION_IDS = [
         'sendMessage',
         'getMessage',
+        'createVerification',
+        'checkVerification',
+        'getVerification',
         'listMessages',
         'uploadMedia',
         'listMedia',

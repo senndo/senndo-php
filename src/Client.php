@@ -31,6 +31,11 @@ use Senndo\Generated\Contract;
  * @phpstan-import-type GetMessageResponse from Contract
  * @phpstan-import-type ListMessagesQuery from Contract
  * @phpstan-import-type ListMessagesResponse from Contract
+ * @phpstan-import-type CreateVerificationBody from Contract
+ * @phpstan-import-type CreateVerificationResponse from Contract
+ * @phpstan-import-type CheckVerificationBody from Contract
+ * @phpstan-import-type CheckVerificationResponse from Contract
+ * @phpstan-import-type GetVerificationResponse from Contract
  * @phpstan-import-type UploadMediaResponse from Contract
  * @phpstan-import-type ListMediaQuery from Contract
  * @phpstan-import-type ListMediaResponse from Contract
@@ -59,7 +64,7 @@ use Senndo\Generated\Contract;
 final class Client implements ClientContract
 {
     /** La version du paquet, vérifiée contre `composer.json` par un test. */
-    public const SDK_VERSION = '1.2.0';
+    public const SDK_VERSION = '1.3.0';
 
     /** Les préfixes d'idempotence que la plateforme se réserve (entrants, campagnes). */
     private const RESERVED_IDEMPOTENCY_PREFIXES = ['in:', 'cmp:'];
@@ -220,6 +225,58 @@ final class Client implements ClientContract
     {
         /** @var ListMessagesResponse */
         return $this->call('listMessages', $options, query: $query);
+    }
+
+    // ── Vérification ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Crée une vérification et envoie le code au destinataire.
+     *
+     * `idempotencyKey` est facultative mais recommandée : un rejeu avec la même clé renvoie la
+     * vérification déjà créée avec `replay: true`, sans nouvel envoi ni nouveau débit. Sans clé,
+     * l'appel n'est JAMAIS retenté automatiquement — chaque exécution crée et facture une
+     * vérification.
+     *
+     * @param CreateVerificationBody $body
+     *
+     * @return CreateVerificationResponse
+     */
+    public function createVerification(array $body, ?RequestOptions $options = null): array
+    {
+        $this->assertRequiredBody('createVerification', $body);
+
+        /** @var CreateVerificationResponse */
+        return $this->call('createVerification', $options, body: $body);
+    }
+
+    /**
+     * Contrôle le code saisi par l'utilisateur et rend le statut résultant.
+     *
+     * Chaque contrôle consomme un essai : cet appel n'est jamais retenté automatiquement. Un
+     * `denied` n'est pas terminal tant qu'il reste des essais ; `approved`, `expired` et
+     * `max_attempts` le sont.
+     *
+     * @param CheckVerificationBody $body
+     *
+     * @return CheckVerificationResponse
+     */
+    public function checkVerification(array $body, ?RequestOptions $options = null): array
+    {
+        $this->assertRequiredBody('checkVerification', $body);
+
+        /** @var CheckVerificationResponse */
+        return $this->call('checkVerification', $options, body: $body);
+    }
+
+    /**
+     * Relit l'état d'une vérification — statut, essais restants et VERDICT de livraison.
+     *
+     * @return GetVerificationResponse
+     */
+    public function getVerification(string $id, ?RequestOptions $options = null): array
+    {
+        /** @var GetVerificationResponse */
+        return $this->call('getVerification', $options, pathValues: ['id' => $id]);
     }
 
     // ── Média ────────────────────────────────────────────────────────────────────────────────

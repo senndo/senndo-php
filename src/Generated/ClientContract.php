@@ -16,6 +16,10 @@ use Senndo\RequestOptions;
  *
  * Régénérer : `node packages/sdk-codegen/bin/generate.mjs php`.
  *
+ * @phpstan-import-type CheckVerificationBody from Contract
+ * @phpstan-import-type CheckVerificationResponse from Contract
+ * @phpstan-import-type CreateVerificationBody from Contract
+ * @phpstan-import-type CreateVerificationResponse from Contract
  * @phpstan-import-type CreateWebhookBody from Contract
  * @phpstan-import-type CreateWebhookResponse from Contract
  * @phpstan-import-type EstimateMessageBody from Contract
@@ -24,6 +28,7 @@ use Senndo\RequestOptions;
  * @phpstan-import-type GetBalanceResponse from Contract
  * @phpstan-import-type GetMessageResponse from Contract
  * @phpstan-import-type GetRoutingCredentialsResponse from Contract
+ * @phpstan-import-type GetVerificationResponse from Contract
  * @phpstan-import-type ListContentTemplatesResponse from Contract
  * @phpstan-import-type ListCurrenciesResponse from Contract
  * @phpstan-import-type ListInboxMessagesQuery from Contract
@@ -65,6 +70,30 @@ interface ClientContract
      * @return GetMessageResponse
      */
     public function getMessage(string $id, ?RequestOptions $options = null): array;
+
+    /**
+     * Envoyer un code de vérification
+     *
+     * @param CreateVerificationBody $body
+     * @return CreateVerificationResponse
+     */
+    public function createVerification(array $body, ?RequestOptions $options = null): array;
+
+    /**
+     * Contrôler un code de vérification
+     *
+     * @param CheckVerificationBody $body
+     * @return CheckVerificationResponse
+     */
+    public function checkVerification(array $body, ?RequestOptions $options = null): array;
+
+    /**
+     * Lire l’état d’une vérification
+     *
+     * @param string $id
+     * @return GetVerificationResponse
+     */
+    public function getVerification(string $id, ?RequestOptions $options = null): array;
 
     /**
      * Lister les messages envoyés

@@ -21,7 +21,7 @@ $senndo = new Client(apiKey: $cleApi);
 
 $envoi = $senndo->sendMessage([
     'channel' => 'sms',
-    'to' => '+33612345678',
+    'to' => '+15550001111',
     'text' => 'Votre code de connexion est 4821.',
     'idempotencyKey' => "connexion-{$utilisateurId}",
 ]);
@@ -61,7 +61,7 @@ $senndo->sendMessage([
 // WhatsApp Twilio : un modèle hébergé (`HX…`, lu par `listContentTemplates()`) et ses variables.
 $senndo->sendMessage([
     'channel' => 'whatsapp_twilio',
-    'to' => '+33612345678',
+    'to' => '+15550001111',
     'content' => ['sid' => 'HX00000000000000000000000000000000', 'variables' => ['1' => '4821']],
     'idempotencyKey' => "otp-twilio-{$utilisateurId}",
 ]);
@@ -137,7 +137,7 @@ $senndo->sendMessage([
 try {
     $senndo->sendMessage([
         'channel' => 'sms',
-        'to' => '+22507000000',
+        'to' => '+15550002222',
         'text' => 'Bonjour.',
         'idempotencyKey' => "bienvenue-{$utilisateurId}",
     ]);
@@ -207,6 +207,8 @@ Le SDK retente **uniquement** ce qui peut l'être sans conséquence :
 |---|---|
 | `GET`, `DELETE` | oui — sur échec de transport, 429, 5xx |
 | `sendMessage` (porte une clé d'idempotence) | oui |
+| `createVerification` (avec une clé d'idempotence) | oui |
+| `createVerification` sans clé, `checkVerification` (chaque contrôle consomme un essai) | **jamais** |
 | `createWebhook`, `estimateMessage`, `revokeWebhook` | **jamais** |
 | tout `4xx` autre que 429 | jamais |
 
@@ -236,7 +238,7 @@ $fichier = $senndo->uploadMedia(
 
 $senndo->sendMessage([
     'channel' => 'whatsapp_cloud',
-    'to' => '+33612345678',
+    'to' => '+15550001111',
     'text' => 'Votre facture.',
     'media' => ['ref' => $fichier['ref']],
     'idempotencyKey' => "facture-{$commande['reference']}",
