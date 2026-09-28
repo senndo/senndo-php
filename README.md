@@ -288,6 +288,48 @@ Il n'existe aucun accesseur qui rende la clé en clair, et `__debugInfo` masque 
 
 ---
 
+## Vérification d'un numéro (WhatsApp)
+
+senndo génère le code, l'envoie par WhatsApp, l'expire et compte les essais ; votre application ne
+voit jamais le code. Facturée à l'envoi, une fois par vérification.
+
+```php
+$verification = $senndo->createVerification([
+    'to' => '+15550001111',
+    'locale' => 'fr',
+    'idempotencyKey' => "inscription-{$utilisateurId}-otp-1",
+]);
+
+$codeSaisi = '482913'; // ce que l'utilisateur a tapé — ou collé depuis le message
+$verdict = $senndo->checkVerification(['id' => $verification['id'], 'code' => $codeSaisi]);
+if ($verdict['status'] === 'approved') {
+    journaliser('numéro vérifié', $verification['to']);
+}
+```
+
+`getVerification($id)` rend le verdict de remise du fournisseur (`delivery.status`) : un destinataire
+sans WhatsApp échoue avec la raison `recipient_not_on_whatsapp`, à vous de basculer. `codeLength`
+(4 à 8, défaut 6) choisit la longueur du code : six chiffres ou plus pour tout ce qui touche à
+l'argent ou à la récupération d'un compte.
+
+
+L'émetteur se choisit avec `sender`. Absent : votre propre numéro WhatsApp Cloud et votre modèle
+d'authentification si vous en avez désigné un pour cette langue (console, Verify → Émetteur et
+modèle), sinon le numéro partagé de senndo. `"platform"` force le numéro partagé ; `"account"` exige
+la désignation et ne se replie jamais. La réponse dit dans `sender` l'émetteur qui a porté le code ;
+chacun a son prix dans votre carnet.
+
+```php
+$depuisMonNumero = $senndo->createVerification([
+    'to' => '+15550001111',
+    'sender' => 'account',
+    'idempotencyKey' => 'inscription-otp-2',
+]);
+echo $depuisMonNumero['sender']; // 'account'
+```
+
+---
+
 ## Webhooks
 
 ```php

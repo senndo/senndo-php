@@ -102,6 +102,7 @@ namespace Senndo\Generated;
  *     codeLength?: int,
  *     maxAttempts?: int,
  *     idempotencyKey?: string,
+ *     sender?: 'platform'|'account',
  * }
  *
  * @phpstan-type CreateVerificationResponseDelivery array{
@@ -117,6 +118,7 @@ namespace Senndo\Generated;
  *     to: string,
  *     expiresAt: string,
  *     attemptsRemaining: int,
+ *     sender: 'platform'|'account',
  *     delivery: CreateVerificationResponseDelivery,
  *     replay: bool,
  * }
@@ -144,6 +146,7 @@ namespace Senndo\Generated;
  *     to: string,
  *     expiresAt: string,
  *     attemptsRemaining: int,
+ *     sender: 'platform'|'account',
  *     delivery: GetVerificationResponseDelivery,
  * }
  *
@@ -326,6 +329,7 @@ namespace Senndo\Generated;
  *     convertGsm7?: bool,
  *     personalize?: bool,
  *     destinations?: list<string>,
+ *     templateId?: string,
  * }
  *
  * @phpstan-type EstimateMessageResponsePersonalized array{
@@ -476,6 +480,12 @@ namespace Senndo\Generated;
  *     displayNumber: string,
  *     hasToken: bool,
  *     createdAt: string,
+ *     wabaId: string|null,
+ *     verifiedName: string,
+ *     nameStatus: string,
+ *     qualityRating: string,
+ *     lastCheckedAt: string|null,
+ *     webhookPath: string|null,
  * }
  *
  * @phpstan-type ListWaCloudNumbersResponseSharedSendersItem array{
