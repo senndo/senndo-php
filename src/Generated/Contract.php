@@ -56,6 +56,7 @@ namespace Senndo\Generated;
  *     content?: SendMessageBodyContent,
  *     idempotencyKey: string,
  *     senderId?: string,
+ *     senderNumberId?: string,
  *     country?: CountryIso3,
  *     category?: 'marketing'|'utility'|'authentication'|'service',
  *     tier?: 'standard'|'premium',
@@ -330,6 +331,12 @@ namespace Senndo\Generated;
  *     personalize?: bool,
  *     destinations?: list<string>,
  *     templateId?: string,
+ *     senderNumberId?: string,
+ * }
+ *
+ * @phpstan-type EstimateMessageResponseUnitPriceRange array{
+ *     minUsd: string,
+ *     maxUsd: string,
  * }
  *
  * @phpstan-type EstimateMessageResponsePersonalized array{
@@ -350,6 +357,7 @@ namespace Senndo\Generated;
  *     transliterated: bool,
  *     unitPriceUsd: string,
  *     totalUsd: string,
+ *     unitPriceRange?: EstimateMessageResponseUnitPriceRange,
  *     personalized?: EstimateMessageResponsePersonalized,
  * }
  *
@@ -432,6 +440,18 @@ namespace Senndo\Generated;
  *     messages: list<ListInboxMessagesResponseMessagesItem>,
  * }
  *
+ * @phpstan-type ListWaTemplatesResponseTemplatesItemOriginSendersItem array{
+ *     id: string,
+ *     displayNumber: string,
+ *     verifiedName: string,
+ * }
+ *
+ * @phpstan-type ListWaTemplatesResponseTemplatesItemOrigin array{
+ *     kind: 'platform_shared'|'platform'|'own',
+ *     wabaId: string|null,
+ *     senders: list<ListWaTemplatesResponseTemplatesItemOriginSendersItem>,
+ * }
+ *
  * @phpstan-type ListWaTemplatesResponseTemplatesItemHeader array{
  *     type: 'none'|'text'|'image'|'video'|'document',
  *     text?: string,
@@ -456,8 +476,9 @@ namespace Senndo\Generated;
  *     category: 'MARKETING'|'UTILITY'|'AUTHENTICATION',
  *     requestedCategory: 'MARKETING'|'UTILITY'|'AUTHENTICATION',
  *     effectiveCategory: 'MARKETING'|'UTILITY'|'AUTHENTICATION'|null,
- *     status: 'draft'|'pending'|'approved'|'rejected'|'paused',
+ *     status: 'draft'|'pending'|'approved'|'rejected'|'paused'|'deleted',
  *     platformShared: bool,
+ *     origin: ListWaTemplatesResponseTemplatesItemOrigin,
  *     body: string,
  *     footer: string,
  *     bodyExamples: list<string>,
@@ -494,6 +515,7 @@ namespace Senndo\Generated;
  *     verifiedName: string|null,
  *     pairedNumber: string|null,
  *     oneWay: bool,
+ *     numberId?: string,
  *     sessionId?: string,
  * }
  *
